@@ -1,0 +1,41 @@
+    /*
+     * read takes in a file as a String, this file should be a .mtx file.
+     * Takes out the needed data, and adds it to our graph
+     */
+    public static DGraph read(String filename)
+            throws java.io.FileNotFoundException {
+        Scanner fileInput = null;
+        try {
+            fileInput = new Scanner(new File(filename));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String line = fileInput.nextLine();
+
+        // skips over all the non essential info in the file
+        while (line.startsWith("%")) {
+            line = fileInput.nextLine();
+        }
+
+        String[] str = line.split("( )+");
+
+        // finds the number of nodes in the graph (numNodes)
+        int numNodes = (Integer.valueOf(str[0].trim())).intValue();
+
+        // creates a new DGraph from numnodes
+        DGraph retval = new DGraph(numNodes);
+
+        // while the file has more lines, keep creating new nodes for the graph
+        while (fileInput.hasNext()) {
+            line = fileInput.nextLine();
+            str = line.split("( )+");
+            // grabs all values for a new edge
+            int v = (Integer.valueOf(str[0].trim())).intValue();
+            int w = (Integer.valueOf(str[1].trim())).intValue();
+            double weight = (Double.valueOf(str[2].trim())).doubleValue();
+            retval.addEdge(v, w, weight);
+        }
+        fileInput.close();
+        return retval;
+    }
+}
