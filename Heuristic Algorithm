@@ -1,0 +1,33 @@
+   /*
+     * uses a heuristic algorithm to figure out the
+     * traveling salesperson problem.
+     */
+    private static Trip heuristic(DGraph graph) {
+        // create a trip
+        Trip trip = new Trip(graph.getNumNodes());
+        int current = 1;
+        int currentTemp = 1;
+        //choose city 1 first, call it the current city
+        trip.chooseNextCity(1);
+        // for k=2 to numNodes inclusive
+        for (int i = 2; i <= graph.getNumNodes(); i++) {
+            Double lowestWeight = Double.MAX_VALUE;
+            List<Integer> neighbors = graph.getNeighbors(current);
+            //for each neighbor of the current city 
+            for (int neighbor : neighbors) {
+                //find the neighbor that is available 
+                // AND the closest to the current city 
+                if (trip.isCityAvailable(neighbor)) {
+                    if (graph.getWeight(current, neighbor) < lowestWeight) {
+                        lowestWeight = (graph.getWeight(current, neighbor));
+                        //choose the closest city that is available for the trip 
+                        currentTemp = neighbor;
+                    }
+                }
+            }
+            // call that closest city the current city
+            trip.chooseNextCity(currentTemp);
+            current = currentTemp;
+        }
+        return trip;
+    }
