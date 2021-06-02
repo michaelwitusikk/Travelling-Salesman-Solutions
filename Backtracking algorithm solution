@@ -1,0 +1,43 @@
+
+    /*
+     * uses a backtracking algorithm to figure out the
+     * traveling salesperson problem. This version is a
+     * more efficient version of my original
+     * backtracking algorithm.
+     */
+    private static Trip mine(DGraph graph) {
+        // current trip
+        Trip trip = new Trip(graph.getNumNodes());
+        // smallest trip found
+        Trip minimum = new Trip(graph.getNumNodes());
+        trip.chooseNextCity(1);
+        mineHelper(graph, trip, minimum);
+        return minimum;
+
+    }
+
+    // helper function for the backtrack algorithm
+    private static void mineHelper(DGraph graph, Trip trip, Trip minimum) {
+        // if all nodes are in trip then
+        if (trip.citiesLeft().isEmpty()) {
+            // process the current trip: does it have less cost than min trip?
+            if (trip.tripCost(graph) < minimum.tripCost(graph)) {
+                // if so then modify min trip previously found
+                minimum.copyOtherIntoSelf(trip);
+            }
+            return;
+        } else {
+            // if trip so far has less cost than the min trip previously found
+            if (trip.tripCost(graph) < minimum.tripCost(graph)) {
+                // for each city x of the cities left
+                for (Integer city : trip.citiesLeft()) {
+                    // choose
+                    trip.chooseNextCity(city);
+                    // recurse
+                    mineHelper(graph, trip, minimum);
+                    // unchoose
+                    trip.unchooseLastCity();
+                }
+            }
+        }
+    }
